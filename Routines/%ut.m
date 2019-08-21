@@ -38,7 +38,7 @@ GETSYS()	;.EF - returns numeric indicator of system value
 	;
 SETUT	;
 	; VEN/SMH 26JUL2013
-	I '($D(IO)#2) S IO=$PRINCIPLE
+	I '($D(IO)#2) S IO=$PRINCIPAL
 	S U="^"
 	; VEN/SMH 26JUL2013 END
 	;
