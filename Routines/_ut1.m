@@ -159,47 +159,25 @@ COV(NMSPS,COVCODE,VERBOSITY)	; VEN/SMH - PUBLIC ENTRY POINT; Coverage calculatio
 	;
 	; ZEXCEPT: %utcovxx - SET and KILLED in this code at top level
 	; ZEXCEPT: %Monitor,%apiOBJ,DecomposeStatus,LineByLine,Start,Stop,System,class - not variables parts of classes
-	; ZEXCEPT: %utIO - NEWed and set in EN^%ut
 	N COVER,COVERSAV,I,NMSP1,RTN,RTNS,ERR,STATUS
 	W !,"Loading routines to test coverage...",!
-	I ($$GETSYS^%ut()=47) D  ; GT.M only!
-	. N NMSP S NMSP=$G(NMSPS)
-	. D:NMSP]""  S NMSP="" F  S NMSP=$O(NMSPS(NMSP)) Q:NMSP=""  D
-	.. N %ZR ; GT.M specific
-	.. D SILENT^%RSEL(NMSP,"SRC") ; GT.M specific. On Cache use $O(^$R(RTN)).
-	.. N RN S RN=""
-	.. F  S RN=$O(%ZR(RN)) Q:RN=""  W RN," " D
-	... N L2 S L2=$T(+2^@RN)
-	. . . S L2=$TR(L2,$C(9)," ") ; change tabs to spaces ; JLI 160316 inserted to replace above
-	. . . I $E($P(L2," ",2),1,2)'=";;" K %ZR(RN) W !,"Routine "_RN_" removed from analysis, since it doesn't have the standard second line format",!
-	.. M RTNS=%ZR
-	.. K %ZR
-	. Q
-	;
-	I ($$GETSYS^%ut()=0) D  ; CACHE SPECIFIC
-	. N NMSP S NMSP=$G(NMSPS)
-	. D:NMSP]""  S NMSP="" F  S NMSP=$O(NMSPS(NMSP)) Q:NMSP=""  D
-	. . S NMSP1=NMSP I NMSP["*" S NMSP1=$P(NMSP,"*")
-	. . I $D(^$R(NMSP1)) S RTNS(NMSP1)=""
-	. . I NMSP["*" S RTN=NMSP1 F  S RTN=$O(^$R(RTN)) Q:RTN'[NMSP1  S RTNS(RTN)=""
-	. . Q
-	. Q
+	D GETRTNS(.RTNS,NMSPS)
 	;
 	; ZEXCEPT: CTRAP - not really a variable
 	S VERBOSITY=+$G(VERBOSITY) ; Get 0 if not passed.
 	;
 	;
 	N GL
-	S GL=$NA(^TMP("%utCOVCOHORT",$J))
+	S GL=$NA(^TMP("%utORIGINAL-COHORT",$J))
 	I '$D(^TMP("%utcovrunning",$J)) K @GL
 	D RTNANAL(.RTNS,GL) ; save off any current coverage data
 	I '$D(^TMP("%utcovrunning",$J)) N EXIT S EXIT=0 D  Q:EXIT
-	. K ^TMP("%utCOVCOHORTSAV",$J)
-	. M ^TMP("%utCOVCOHORTSAV",$J)=^TMP("%utCOVCOHORT",$J)
-	. K ^TMP("%utCOVRESULT",$J)
+	. K ^TMP("%utSURVIVING-COHORT",$J)
+	. M ^TMP("%utSURVIVING-COHORT",$J)=^TMP("%utORIGINAL-COHORT",$J)
+	. K ^TMP("%utCOVERAGE",$J)
 	. S ^TMP("%utcovrunning",$J)=1,%utcovxx=1
 	. ;
-	. I ($$GETSYS^%ut()=47) VIEW "TRACE":1:$NA(^TMP("%utCOVRESULT",$J))  ; GT.M START PROFILING
+	. I ($$GETSYS^%ut()=47) VIEW "TRACE":1:$NA(^TMP("%utCOVERAGE",$J))  ; GT.M START PROFILING
 	. ;
 	. I ($$GETSYS^%ut()=0) D  ; CACHE CODE TO START PROFILING
 	. . N NMSP,NMSPV S NMSP="",NMSPV="" F  S NMSPV=$O(RTNS(NMSPV)) Q:NMSPV=""  S NMSP=NMSP_NMSPV_","
@@ -221,31 +199,24 @@ COV(NMSPS,COVCODE,VERBOSITY)	; VEN/SMH - PUBLIC ENTRY POINT; Coverage calculatio
 	. Q
 	; GT.M STOP PROFILING if this is the original level that started it
 	I $D(^TMP("%utcovrunning",$J)),$D(%utcovxx) D
-	. I ($$GETSYS^%ut()=47) VIEW "TRACE":0:$NA(^TMP("%utCOVRESULT",$J)) ; GT.M SPECIFIC
+	. I ($$GETSYS^%ut()=47) VIEW "TRACE":0:$NA(^TMP("%utCOVERAGE",$J)) ; GT.M SPECIFIC
 	. I ($$GETSYS^%ut()=0) ; CACHE SPECIFIC
 	. K %utcovxx,^TMP("%utcovrunning",$J)
 	. Q
 	;
-	I '$D(^TMP("%utcovrunning",$J)) D
-	. I ($$GETSYS^%ut()=0) D  ; CACHE SPECIFIC CODE
-	. . S COVERSAV=$NA(^TMP("%utCOVCOHORTSAV",$J)) K @COVERSAV
-	. . S COVER=$NA(^TMP("%utCOVCOHORT",$J)) K @COVER
-	. . D CACHECOV(COVERSAV,COVER)
-	. . D TOTAGS(COVERSAV,0),TOTAGS(COVER,1)
-	. . D ##class(%Monitor.System.LineByLine).Stop()
-	. . Q
-	. D COVCOV($NA(^TMP("%utCOVCOHORT",$J)),$NA(^TMP("%utCOVRESULT",$J))) ; Venn diagram matching between globals
-	. ; Report
-	. I VERBOSITY=-1 D
-	. . K ^TMP("%utCOVREPORT",$J)
-	. . D COVRPTGL^%utcover($NA(^TMP("%utCOVCOHORTSAV",$J)),$NA(^TMP("%utCOVCOHORT",$J)),$NA(^TMP("%utCOVRESULT",$J)),$NA(^TMP("%utCOVREPORT",$J)))
-	. . K ^TMP("%utCOVCOHORTSAV",$J),^TMP("%utCOVCOHORT",$J),^TMP("%utCOVRESULT",$J) ; %utCOVREPORT contains the data for the user
-	. . Q
-	. E  D
-	. . D COVRPT($NA(^TMP("%utCOVCOHORTSAV",$J)),$NA(^TMP("%utCOVCOHORT",$J)),$NA(^TMP("%utCOVRESULT",$J)),VERBOSITY)
-	. . K ^TMP("%utCOVCOHORTSAV",$J),^TMP("%utCOVCOHORT",$J),^TMP("%utCOVRESULT",$J),^TMP("%utCOVREPORT",$J)
-	. . Q
-	. Q
+	; Don't calculate coverage if we are still running (inception scenario)
+	I $D(^TMP("%utcovrunning",$J)) QUIT
+	;
+	I ($$GETSYS^%ut()=0) D  ; CACHE SPECIFIC CODE
+	. S COVERSAV=$NA(^TMP("%utSURVIVING-COHORT",$J)) K @COVERSAV
+	. S COVER=$NA(^TMP("%utORIGINAL-COHORT",$J)) K @COVER
+	. D CACHECOV(COVERSAV,COVER)
+	. D TOTAGS(COVERSAV,0),TOTAGS(COVER,1)
+	. D ##class(%Monitor.System.LineByLine).Stop()
+	;
+	D COVCOV($NA(^TMP("%utSURVIVING-COHORT",$J)),$NA(^TMP("%utCOVERAGE",$J))) ; Venn diagram matching between globals
+	; Report
+	D COVRPT($NA(^TMP("%utORIGINAL-COHORT",$J)),$NA(^TMP("%utSURVIVING-COHORT",$J)),$NA(^TMP("%utRESULT",$J)),VERBOSITY)
 	QUIT
 	;
 CACHECOV(GLOBSAV,GLOB)	;
@@ -261,12 +232,7 @@ CACHECOV(GLOBSAV,GLOB)	;
 	. ; get routine loaded into location
 	. S DIF=$NA(@GLOBSAV@(ROUNAME)),DIF=$E(DIF,1,$L(DIF)-1)_",",XCNP=0,X=ROUNAME
 	. ;X ^%ZOSF("LOAD") ; JLI 160912 see 160701 note in comments at top
-	. I $$GETSYS^%ut()=0 D
-	. . X "N %,%N S %N=0 X ""ZL @X F XCNP=XCNP+1:1 S %N=%N+1,%=$T(+%N) Q:$L(%)=0  S @(DIF_XCNP_"""",0)"""")=%""" ; JLI see 160701 note in comments at top
-	. . Q
-	. I $$GETSYS^%ut()=47 D
-	. . N % S %N=0 F XCNP=XCNP+1:1 S %N=%N+1,%=$T(+%N^@X) Q:$L(%)=0  S @(DIF_XCNP_",0)")=%
-	. . Q
+	. X "N %,%N S %N=0 X ""ZL @X F XCNP=XCNP+1:1 S %N=%N+1,%=$T(+%N) Q:$L(%)=0  S @(DIF_XCNP_"""",0)"""")=%""" ; JLI see 160701 note in comments at top
 	. M @GLOB@(ROUNAME)=@GLOBSAV@(ROUNAME)
 	. Q
 	;
@@ -361,17 +327,20 @@ GETTAG(TERMINTR,LN)	;.EF - get TAG for line, if any
 	S TAG=$E(LN,1,J-1)                                 ; Get tag
 	Q TAG
 	;
-ACTLINES(GL)	; [Private] $$ ; Count active lines
+ACTLINES(GL,SPEC)	; [Private] $$ ; Count active lines
 	;
 	N CNT S CNT=0
 	N REF S REF=GL
 	N GLQL S GLQL=$QL(GL)
+	S SPEC=$G(SPEC)
+	N ORIGQL S ORIGQL=GLQL-$S(SPEC="ALL":0,SPEC="RTN":1,SPEC="TAG":2,1:1/0)
 	F  S REF=$Q(@REF) Q:REF=""  Q:(GL'=$NA(@REF,GLQL))  D
 	. N REFQL S REFQL=$QL(REF)
 	. N LASTSUB S LASTSUB=$QS(REF,REFQL)
 	. ;I LASTSUB?1.N S CNT=CNT+1  ; JLI 160315 commented out
 	. ; count only those with tag,number - not tags which are numbers only ; JLI 160315
-	. I (LASTSUB?1.N)&($QL(REF)=5) S CNT=CNT+1 ; JLI 160315 replaces commented out line
+	. ; I (LASTSUB?1.N)&($QL(REF)=5) S CNT=CNT+1 ; JLI 160315 replaces commented out line
+	. I $QL(REF)-ORIGQL=3 S CNT=CNT+1 ; smh 170910 replaces commented out line
 	QUIT CNT
 	;
 COVCOV(C,R)	; [Private] - Analyze coverage Cohort vs Result
@@ -391,45 +360,75 @@ COVRPT(C,S,R,V)	; [Private] - Coverage Report
 	; R = RESULT    - Global name
 	; V = Verbosity - Scalar from -1 to 3
 	; JLI 150702 -  modified to be able to do unit tests on setting up the text via COVRPTLS
-	N X,I
-	S X=$NA(^TMP("%ut1-covrpt",$J)) K @X
-	D COVRPTLS(C,S,R,V,X)
-	I '$$ISUTEST^%ut() F I=1:1 W:$D(@X@(I)) !,@X@(I) I '$D(@X@(I)) K @X Q
+	N I
+	; SMH 170908 -  verbose = -1 code moved back here.
+	I V=-1 D COVRPTGL^%utcover(C,S,R) QUIT
+	D COVRPTLS(C,S,R,V)
+	I '$$ISUTEST^%ut() F I=1:1 W:$D(@R@(I)) !,@R@(I) I '$D(@R@(I)) K @R Q
 	Q
 	;
-COVRPTLS(C,S,R,V,X)	;
-	;
+COVRPTLS(C,S,R,V)	;
 	N LINNUM S LINNUM=0
-	N ORIGLINES S ORIGLINES=$$ACTLINES(C)
-	N LEFTLINES S LEFTLINES=$$ACTLINES(S)
-	S LINNUM=LINNUM+1,@X@(LINNUM)="",LINNUM=LINNUM+1,@X@(LINNUM)=""
-	S LINNUM=LINNUM+1,@X@(LINNUM)="ORIG: "_ORIGLINES
-	S LINNUM=LINNUM+1,@X@(LINNUM)="LEFT: "_LEFTLINES
-	S LINNUM=LINNUM+1,@X@(LINNUM)="COVERAGE PERCENTAGE: "_$S(ORIGLINES:$J((ORIGLINES-LEFTLINES)/ORIGLINES*100,"",2),1:100.00)
-	S LINNUM=LINNUM+1,@X@(LINNUM)="",LINNUM=LINNUM+1,@X@(LINNUM)=""
-	S LINNUM=LINNUM+1,@X@(LINNUM)="BY ROUTINE:"
+	N ORIGLINES S ORIGLINES=$$ACTLINES(C,"ALL")
+	N LEFTLINES S LEFTLINES=$$ACTLINES(S,"ALL")
+	S LINNUM=LINNUM+1,@R@(LINNUM)="",LINNUM=LINNUM+1,@R@(LINNUM)=""
+	S LINNUM=LINNUM+1,@R@(LINNUM)="ORIG: "_ORIGLINES
+	S LINNUM=LINNUM+1,@R@(LINNUM)="LEFT: "_LEFTLINES
+	S LINNUM=LINNUM+1,@R@(LINNUM)="COVERAGE PERCENTAGE: "_$S(ORIGLINES:$J((ORIGLINES-LEFTLINES)/ORIGLINES*100,"",2),1:100.00)
+	S LINNUM=LINNUM+1,@R@(LINNUM)="",LINNUM=LINNUM+1,@R@(LINNUM)=""
+	S LINNUM=LINNUM+1,@R@(LINNUM)="BY ROUTINE:"
 	I V=0 QUIT  ; No verbosity. Don't print routine detail
 	N RTN S RTN=""
 	F  S RTN=$O(@C@(RTN)) Q:RTN=""  D
-	. N O S O=$$ACTLINES($NA(@C@(RTN)))
-	. N L S L=$$ACTLINES($NA(@S@(RTN)))
+	. N O S O=$$ACTLINES($NA(@C@(RTN)),"RTN")
+	. N L S L=$$ACTLINES($NA(@S@(RTN)),"RTN")
 	. N XX,XY S XX="  "_RTN_"                    ",XX=$E(XX,1,12)
 	. S XY="        "_$S(O:$J((O-L)/O*100,"",2)_"%",1:"------"),XY=$E(XY,$L(XY)-11,$L(XY))
-	. I O>0 S LINNUM=LINNUM+1,@X@(LINNUM)=XX_XY_"  "_(O-L)_" out of "_O
+	. I O>0 S LINNUM=LINNUM+1,@R@(LINNUM)=XX_XY_"  "_(O-L)_" out of "_O
 	. I V=1 QUIT  ; Just print the routine coverage for V=1
 	. N TAG S TAG=""
 	. F  S TAG=$O(@C@(RTN,TAG)) Q:TAG=""  D
-	. . N O S O=$$ACTLINES($NA(@C@(RTN,TAG)))
-	. . N L S L=$$ACTLINES($NA(@S@(RTN,TAG)))
+	. . N O S O=$$ACTLINES($NA(@C@(RTN,TAG)),"TAG")
+	. . N L S L=$$ACTLINES($NA(@S@(RTN,TAG)),"TAG")
 	. . S XX="    "_TAG_"                  ",XX=$E(XX,1,20)
 	. . S XY="      "_$S(O:$J((O-L)/O*100,"",2)_"%",1:"------"),XY=$E(XY,$L(XY)-7,$L(XY))
-	. . I O>0 S LINNUM=LINNUM+1,@X@(LINNUM)=XX_XY_"  "_(O-L)_" out of "_O
+	. . I O>0 S LINNUM=LINNUM+1,@R@(LINNUM)=XX_XY_"  "_(O-L)_" out of "_O
 	. . I V=2 QUIT  ; Just print routine/tags coverage for V=2; V=3 print uncovered lines
 	. . N LN S LN=""
-	. . F  S LN=$O(@S@(RTN,TAG,LN)) Q:LN=""  S LINNUM=LINNUM+1,@X@(LINNUM)=TAG_"+"_LN_": "_^(LN)
+	. . F  S LN=$O(@S@(RTN,TAG,LN)) Q:LN=""  S LINNUM=LINNUM+1,@R@(LINNUM)=TAG_"+"_LN_": "_^(LN)
 	. . Q
 	. Q
 	QUIT
 	;
 ISUTEST()	;
 	Q $$ISUTEST^%ut()
+	;
+GETRTNS(RTNS,NMSPS)	; [Public] Get routines for namespaces
+	; .RTNS - Output. Initially empty
+	; NMSPS - Input: Namespaces
+	;
+	I ($$GETSYS^%ut()=47) D  ; GT.M only!
+	. N NMSP S NMSP=$G(NMSPS)
+	. D:NMSP]""  S NMSP="" F  S NMSP=$O(NMSPS(NMSP)) Q:NMSP=""  D
+	.. N %ZR ; GT.M specific
+	.. D SILENT^%RSEL(NMSP,"SRC") ; GT.M specific. On Cache use $O(^$R(RTN)).
+	.. N RN S RN=""
+	.. F  S RN=$O(%ZR(RN)) Q:RN=""  W RN," " D
+	... N L2 S L2=$T(+2^@RN)
+	. . . ;S L2=$TR(L2,$C(9,32)) ; Translate spaces and tabs out ; JLI 160316 commented out
+	. . . S L2=$TR(L2,$C(9)," ") ; change tabs to spaces ; JLI 160316 inserted to replace above
+	. . . ;I $E(L2,1,2)'=";;" K %ZR(RN)  ; Not a human produced routine JLI 160316 commented out
+	. . . ; routine doesn't follow the standards and second line start with ;; ; JLI 160316
+	. . . I $E($P(L2," ",2),1,2)'=";;" K %ZR(RN) W !,"Routine "_RN_" removed from analysis, since it doesn't have the standard second line",! ; JLI 160316 inserted to replace above
+	.. M RTNS=%ZR
+	.. K %ZR
+	. Q
+	;
+	I ($$GETSYS^%ut()=0) D  ; CACHE SPECIFIC
+	. N NMSP S NMSP=$G(NMSPS)
+	. D:NMSP]""  S NMSP="" F  S NMSP=$O(NMSPS(NMSP)) Q:NMSP=""  D
+	. . S NMSP1=NMSP I NMSP["*" S NMSP1=$P(NMSP,"*")
+	. . I $D(^$R(NMSP1)) S RTNS(NMSP1)=""
+	. . I NMSP["*" S RTN=NMSP1 F  S RTN=$O(^$R(RTN)) Q:RTN'[NMSP1  S RTNS(RTN)=""
+	. . Q
+	. Q

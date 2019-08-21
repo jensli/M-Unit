@@ -177,7 +177,6 @@ VERBOSE(%utETRY,SUCCESS,%utVERB,%utElapsed)	; Say whether we succeeded or failed
 	W ?RM
 	I $G(SUCCESS) W "[OK]"
 	E  W "[FAIL]"
-	;I 23[%utVERB,$G(%utElapsed)]"" W " ",%utElapsed
 	I 23[%utVERB,$G(%utElapsed)]"" W " ",$J(%utElapsed,8,3),"ms"
 	D RESETIO^%ut1
 	Q
