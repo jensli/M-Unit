@@ -27,5 +27,11 @@ T11	; @TEST An @TEST Entry point in Another Routine invoked through XTROU offset
 T12	;
 	D CHKTF^%ut(1)
 	QUIT
+EQ	; @TEST Rename of CHKEQ
+	D EQ^%ut(1,1)
+	QUIT
+TF	; @TEST Rename of CHKTF
+	D TF^%ut(1)
+	QUIT
 XTENT	;
 	;;T12;An XTENT offset entry point in Another Routine invoked through XTROU offsets

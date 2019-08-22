@@ -189,6 +189,9 @@ VERBOSE1(%utETRY,%utI)	; Print out the entry point info
 	D RESETIO^%ut1
 	Q
 	;
+TF(XTSTVAL,XTERMSG)	; Rename of CHKTF
+	D CHKTF($G(XTSTVAL),$G(XTERMSG))
+	QUIT
 CHKTF(XTSTVAL,XTERMSG)	; Entry point for checking True or False values
 	; ZEXCEPT: %utERRL,%utGUI - CREATED IN SETUP, KILLED IN END
 	; ZEXCEPT: %ut - NEWED IN EN
@@ -209,6 +212,9 @@ CHKTF(XTSTVAL,XTERMSG)	; Entry point for checking True or False values
 	I $D(%utGUI),'XTSTVAL S %ut("CNT")=%ut("CNT")+1,@%ut("RSLT")@(%ut("CNT"))=%ut("LOC")_XTGUISEP_"FAILURE"_XTGUISEP_XTERMSG,%ut("FAIL")=%ut("FAIL")+1
 	Q
 	;
+EQ(XTEXPECT,XTACTUAL,XTERMSG)	; Rename of CHKEQ
+	D CHKEQ($G(XTEXPECT),$G(XTACTUAL),$G(XTERMSG))
+	QUIT
 CHKEQ(XTEXPECT,XTACTUAL,XTERMSG)	; Entry point for checking values to see if they are EQUAL
 	; ZEXCEPT: %utERRL,%utGUI -CREATED IN SETUP, KILLED IN END
 	; ZEXCEPT: %ut  -- NEWED IN EN
