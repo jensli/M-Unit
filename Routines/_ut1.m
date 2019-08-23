@@ -7,6 +7,7 @@
 	; Major contributions by Dr. Sam Habiel
 	; Additions and modifications made by Joel L. Ivey 05/2014-12/2015
 	; Additions and modifications made by Sam H. Habiel and Joel L. Ivey 12/2015-02/2017
+	; Modified by Christopher Edwards 08/2019
 	;
 	; older comments moved to %utcover due to space requirements
 	;
@@ -382,7 +383,7 @@ COVRPTLS(C,S,R,V)	;
 	F  S RTN=$O(@C@(RTN)) Q:RTN=""  D
 	. N O S O=$$ACTLINES($NA(@C@(RTN)),"RTN")
 	. N L S L=$$ACTLINES($NA(@S@(RTN)),"RTN")
-	. N XX,XY S XX="  "_RTN_"                    ",XX=$E(XX,1,12)
+	. N XX,XY S XX="  "_RTN_"                    ",XX=$E(XX,1,20)
 	. S XY="        "_$S(O:$J((O-L)/O*100,"",2)_"%",1:"------"),XY=$E(XY,$L(XY)-11,$L(XY))
 	. I O>0 S LINNUM=LINNUM+1,@R@(LINNUM)=XX_XY_"  "_(O-L)_" out of "_O
 	. I V=1 QUIT  ; Just print the routine coverage for V=1
