@@ -18,6 +18,9 @@
 	D ^%utt6 ; runs unit tests on all of it
 	Q
 	;
+en(%utRNAM,%utVERB,%utBREAK)
+	D EN($G(%utRNAM),$G(%utVERB),$G(%utBREAK))
+	QUIT
 EN(%utRNAM,%utVERB,%utBREAK)	; .SR Entry point with primary test routine name
 	; %utRNAM: (Required) Routine name that contians the tags with @TEST in them or the tag XTROU
 	; %utVERB: (optional) 1 for verbose output or for verbose and timing info 2 (milliseconds) or 3 (microseconds).
@@ -244,10 +247,16 @@ CHKEQ(XTEXPECT,XTACTUAL,XTERMSG)	; Entry point for checking values to see if the
 	I $D(%utGUI),XTEXPECT'=XTACTUAL S %ut("CNT")=%ut("CNT")+1,@%ut("RSLT")@(%ut("CNT"))=%ut("LOC")_XTGUISEP_"FAILURE"_XTGUISEP_FAILMSG_XTERMSG,%ut("FAIL")=%ut("FAIL")+1
 	Q
 	;
+fail(XTERMSG)
+	D FAIL($G(XTERMSG))
+	QUIT
 FAIL(XTERMSG)	; Entry point for generating a failure message
 	D FAIL^%ut1($G(XTERMSG))
 	Q
 	;
+succeed
+	D SUCCEED
+	QUIT
 SUCCEED	; Entry point for forcing a success (Thx David Whitten)
 	; ZEXCEPT: %utERRL,%utGUI - CREATED IN SETUP, KILLED IN END
 	; ZEXCEPT: %ut - NEWED IN EN

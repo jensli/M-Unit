@@ -35,5 +35,11 @@ TF	; @TEST Rename of CHKTF
 	D TF^%ut(1)
 	D tf^%ut(1)
 	QUIT
+SUCCEED	; @TEST Rename of SUCCEED
+	D succeed^%ut
+	QUIT
+FAIL	; @TEST Rename of FAIL - THIS TEST SHOULD FAIL
+	D fail^%ut
+	QUIT
 XTENT	;
 	;;T12;An XTENT offset entry point in Another Routine invoked through XTROU offsets
