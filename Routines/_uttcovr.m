@@ -3,6 +3,7 @@
 	; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
 	; Original routine authored by Joel L. Ivey 05/2014-12/2015
 	; Modified by Joel L. Ivey 02/2016-03/2016
+	; Modified by Christopher Edwards 08/2019
 	;
 	;
 	; ZEXCEPT: DTIME - if present the value is Kernel timeout for reads
@@ -102,7 +103,7 @@ COVRPT	 ; @TEST
 	S VRBOSITY=1
 	D COVRPT^%ut1(GL1,GL2,GL3,VRBOSITY)
 	D CHKEQ("COVERAGE PERCENTAGE: 42.11",$G(@GL3@(5)),"Verbosity 1 - not expected percentage value")
-	D CHKEQ("  %ut1            42.11%  8 out of 19",$G(@GL3@(9)),"Verbosity 1 - not expected value for line 9")
+	D CHKEQ("  %ut1                    42.11%  8 out of 19",$G(@GL3@(9)),"Verbosity 1 - not expected value for line 9")
 	D CHKTF('$D(@GL3@(10)),"Verbosity 1 - unexpected data in 10th line")
 	;
 	S VRBOSITY=2
@@ -130,7 +131,7 @@ COVRPTLS	; @TEST - coverage report returning text in global
 	S VRBOSITY=1
 	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY)
 	D CHKEQ("COVERAGE PERCENTAGE: 42.11",$G(@GL3@(5)),"Verbosity 1 - not expected percentage value")
-	D CHKEQ("  %ut1            42.11%  8 out of 19",$G(@GL3@(9)),"Verbosity 1 - not expected value for line 9")
+	D CHKEQ("  %ut1                    42.11%  8 out of 19",$G(@GL3@(9)),"Verbosity 1 - not expected value for line 9")
 	D CHKTF('$D(@GL3@(10)),"Verbosity 1 - unexpected data in 10th line")
 	K @GL3
 	;
