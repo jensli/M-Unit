@@ -99,8 +99,7 @@ COVENTRY	; setup of COVERAGE NEWs most variables, so TESTROUS passed by global
 	. I ROU'=+ROU S TESTS(ROU)=""
 	. F I=1:1 S VAL=$P(TESTROUS(ROU),",",I) Q:VAL=""  S TESTS(VAL)=""
 	. Q
-	;W !,"COVENTRY^%utcover TESTS:",! ZW TESTS
-	S ROU="" F  S ROU=$O(TESTS(ROU)) Q:ROU=""  D  W !,"Coventry ROU=",ROU
+	S ROU="" F  S ROU=$O(TESTS(ROU)) Q:ROU=""  D
 	. W !!,"------------------- RUNNING ",ROU," -------------------",! ; JLI 160319 put CR after line so periods start on new line
 	. I ROU[U D @ROU
 	. I ROU'[U D @("EN^%ut("""_ROU_""")")
@@ -266,18 +265,18 @@ COVRPTGL(C,S,R,OUT)	; [Private] - Coverage Global for silent invokers
 	; R = RESULT    - Global name
 	; OUT = OUTPUT  - Global name
 	;
-	N O S O=$$ACTLINES^%ut1(C)
-	N L S L=$$ACTLINES^%ut1(S)
-	S @OUT=(O-L)_"/"_O
+	N O S O=$$ACTLINES^%ut1(C,"ALL")
+	N L S L=$$ACTLINES^%ut1(S,"ALL")
+	S @R=(O-L)_"/"_O
 	N RTN,TAG,LN S (RTN,TAG,LN)=""
 	F  S RTN=$O(@C@(RTN)) Q:RTN=""  D
-	. N O S O=$$ACTLINES^%ut1($NA(@C@(RTN)))
-	. N L S L=$$ACTLINES^%ut1($NA(@S@(RTN)))
-	. S @OUT@(RTN)=(O-L)_"/"_O
+	. N O S O=$$ACTLINES^%ut1($NA(@C@(RTN)),"RTN")
+	. N L S L=$$ACTLINES^%ut1($NA(@S@(RTN)),"RTN")
+	. S @R@(RTN)=(O-L)_"/"_O
 	. F  S TAG=$O(@C@(RTN,TAG)) Q:TAG=""  D
-	. . N O S O=$$ACTLINES^%ut1($NA(@C@(RTN,TAG)))
-	. . N L S L=$$ACTLINES^%ut1($NA(@S@(RTN,TAG)))
-	. . S @OUT@(RTN,TAG)=(O-L)_"/"_O
-	. . F  S LN=$O(@S@(RTN,TAG,LN)) Q:LN=""  S @OUT@(RTN,TAG,LN)=@S@(RTN,TAG,LN)
+	. . N O S O=$$ACTLINES^%ut1($NA(@C@(RTN,TAG)),"TAG")
+	. . N L S L=$$ACTLINES^%ut1($NA(@S@(RTN,TAG)),"TAG")
+	. . S @R@(RTN,TAG)=(O-L)_"/"_O
+	. . F  S LN=$O(@S@(RTN,TAG,LN)) Q:LN=""  S @R@(RTN,TAG,LN)=@S@(RTN,TAG,LN)
 	QUIT
 	;

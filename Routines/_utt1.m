@@ -154,18 +154,17 @@ T8	; If IO starts with another device, write to that device as if it's the prici
 	QUIT
 	;
 COVRPTGL	;
-	N GL1,GL2,GL3,GL4
+	N GL1,GL2,GL3
 	S GL1=$NA(^TMP("%utCOVCOHORTSAVx",$J)) K @GL1
 	S GL2=$NA(^TMP("%utCOVCOHORTx",$J)) K @GL2
 	S GL3=$NA(^TMP("%utCOVRESULTx",$J)) K @GL3
-	S GL4=$NA(^TMP("%utCOVREPORTx",$J)) K @GL4
 	D SETGLOBS^%uttcovr(GL1,GL2)
-	D COVRPTGL^%utcover(GL1,GL2,GL3,GL4)
-	D CHKEQ($G(@GL4@("%ut1","ACTLINES")),"0/9","Wrong number of lines covered f>>or ACTLINES")
-	D CHKEQ($G(@GL4@("%ut1","ACTLINES",9))," QUIT CNT","Wrong result for last l>>ine not covered for ACTLINES")
-	D CHKEQ($G(@GL4@("%ut1","CHEKTEST")),"8/10","Wrong number of lines covered >>for CHEKTEST")
-	D CHKEQ($G(@GL4@("%ut1","CHEKTEST",39))," . Q","Wrong result for last line >>not covered for CHEKTEST")
-	K @GL1,@GL2,@GL3,@GL4
+	D COVRPTGL^%utcover(GL1,GL2,GL3)
+	D CHKEQ($G(@GL3@("%ut1","ACTLINES")),"0/9","Wrong number of lines covered f>>or ACTLINES")
+	D CHKEQ($G(@GL3@("%ut1","ACTLINES",9))," QUIT CNT","Wrong result for last l>>ine not covered for ACTLINES")
+	D CHKEQ($G(@GL3@("%ut1","CHEKTEST")),"8/10","Wrong number of lines covered >>for CHEKTEST")
+	D CHKEQ($G(@GL3@("%ut1","CHEKTEST",39))," . Q","Wrong result for last line >>not covered for CHEKTEST")
+	K @GL1,@GL2,@GL3
 	Q
 	;
 LO(X)	Q $TR(X,"ABCDEFGHIJKLMNOPQRSTUVWXYZ","abcdefghijklmnopqrstuvwxyz")

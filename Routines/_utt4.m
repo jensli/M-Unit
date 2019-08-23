@@ -13,13 +13,13 @@ XTMUNITW	; VEN/SMH - Coverage Test Runner;2014-04-17  3:30 PM
 	;
 MAIN	; @TEST - Test coverage calculations
 	Q:$D(^TMP("%uttcovr",$J))  ; already running coverage analysis from %uttcovr
-	Q:$D(^TMP("%utCOVREPORT",$J))  ; another coverage already running
+	Q:$D(^TMP("%utRESULT",$J))  ; another coverage already running
 	S ^TMP("%utt4val",$J)=1
 	D COV^%ut("%utt3","D EN^%ut(""%utt3"",1)",-1)  ; Only produce output global.
-	D CHKEQ^%ut("14/19",^TMP("%utCOVREPORT",$J))
-	D CHKEQ^%ut("2/5",^TMP("%utCOVREPORT",$J,"%utt3","INTERNAL"))
-	D CHKTF^%ut($D(^TMP("%utCOVREPORT",$J,"%utt3","T2",4)))
-	D CHKEQ^%ut("1/1",^TMP("%utCOVREPORT",$J,"%utt3","SETUP"))
+	D CHKEQ^%ut("14/19",^TMP("%utRESULT",$J))
+	D CHKEQ^%ut("2/5",^TMP("%utRESULT",$J,"%utt3","INTERNAL"))
+	D CHKTF^%ut($D(^TMP("%utRESULT",$J,"%utt3","T2",4)))
+	D CHKEQ^%ut("1/1",^TMP("%utRESULT",$J,"%utt3","SETUP"))
 	K ^TMP("%utt4val",$J)
 	QUIT
 	;

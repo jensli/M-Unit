@@ -9,10 +9,10 @@
 	N RUNCODE,XCLUDE
 	;
 	; Have it run the following entry points or, if no ^, call EN^%ut with routine name
-	S RUNCODE(1)="^%utt1,%utt1,VERBOSE^%utt1(3),^%utt6,VERBOSE^%utt6,VERBOSE3^%utt6,VERBOSE2^%utt6,%uttcovr,^%ut,^%ut1,^%utcover,^%utt7,VERBOSE^%utt7"
+	S RUNCODE(1)="^%utt1,^%utt1,VERBOSE^%utt1(3),^%utt6,VERBOSE^%utt6,VERBOSE3^%utt6,VERBOSE2^%utt6,%uttcovr,^%ut,^%ut1,^%utcover"
 	S RUNCODE("ENTRY^%uttcovr")=""
 	; Have the analysis EXCLUDE the following routines from coverage - unit test routines
-	S XCLUDE(1)="%utt1,%utt2,%utt3,%utt4,%utt5,%utt6,%uttcovr,%utt7"
+	S XCLUDE(1)="%utt1,%utt2,%utt3,%utt4,%utt5,%utt6,%uttcovr"
 	S XCLUDE(2)="%utf2hex" ; a GT.M system file, although it wasn't showing up anyway
 	M ^TMP("%uttcovr",$J,"XCLUDE")=XCLUDE
 	D COVERAGE^%ut("%ut*",.RUNCODE,.XCLUDE,3)
@@ -94,65 +94,62 @@ COVCOV	; @TEST - check COVCOV - remove seen lines
 	Q
 	;
 COVRPT	 ; @TEST
-	N GL1,GL2,GL3,GL4,VRBOSITY,GL5
+	N GL1,GL2,GL3,VRBOSITY
 	S GL1=$NA(^TMP("%utCOVCOHORTSAVx",$J)) K @GL1
 	S GL2=$NA(^TMP("%utCOVCOHORTx",$J)) K @GL2
 	S GL3=$NA(^TMP("%utCOVRESULTx",$J)) K @GL3
-	S GL4=$NA(^TMP("%utCOVREPORTx",$J)) K @GL4
-	S GL5=$NA(^TMP("%ut1-covrpt",$J)) K @GL5
 	D SETGLOBS(GL1,GL2)
 	S VRBOSITY=1
 	D COVRPT^%ut1(GL1,GL2,GL3,VRBOSITY)
-	D CHKEQ("COVERAGE PERCENTAGE: 42.11",$G(@GL5@(5)),"Verbosity 1 - not expected percentage value")
-	D CHKEQ("  %ut1            42.11%  8 out of 19",$G(@GL5@(9)),"Verbosity 1 - not expected value for line 9")
-	D CHKTF('$D(@GL5@(10)),"Verbosity 1 - unexpected data in 10th line")
+	D CHKEQ("COVERAGE PERCENTAGE: 42.11",$G(@GL3@(5)),"Verbosity 1 - not expected percentage value")
+	D CHKEQ("  %ut1            42.11%  8 out of 19",$G(@GL3@(9)),"Verbosity 1 - not expected value for line 9")
+	D CHKTF('$D(@GL3@(10)),"Verbosity 1 - unexpected data in 10th line")
 	;
 	S VRBOSITY=2
 	D COVRPT^%ut1(GL1,GL2,GL3,VRBOSITY)
-	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL5@(10)),"Verbosity 2 - not expected value for 10th line")
-	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL5@(11)),"Verbosity 2 - not expected value for 11th line")
-	D CHKTF('$D(@GL5@(12)),"Verbosity 2 - unexpected data for 12th line")
+	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL3@(10)),"Verbosity 2 - not expected value for 10th line")
+	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL3@(11)),"Verbosity 2 - not expected value for 11th line")
+	D CHKTF('$D(@GL3@(12)),"Verbosity 2 - unexpected data for 12th line")
 	;
 	S VRBOSITY=3
 	D COVRPT^%ut1(GL1,GL2,GL3,VRBOSITY)
-	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL5@(10)),"Verbosity 3 - unexpected value for line 10")
-	D CHKEQ("ACTLINES+9:  QUIT CNT",$G(@GL5@(19)),"Verbosity 3 - unexpected value for line 19")
-	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL5@(20)),"Verbosity 3 - unexpected value for line 20")
-	D CHKEQ("CHEKTEST+39:  . Q",$G(@GL5@(22)),"Verbosity 3 - unexpected value for line 22")
-	D CHKTF('$D(@GL5@(23)),"Verbosity 3 - unexpected line 23")
-	K @GL1,@GL2,@GL3,@GL4,@GL5
+	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL3@(10)),"Verbosity 3 - unexpected value for line 10")
+	D CHKEQ("ACTLINES+9:  QUIT CNT",$G(@GL3@(19)),"Verbosity 3 - unexpected value for line 19")
+	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL3@(20)),"Verbosity 3 - unexpected value for line 20")
+	D CHKEQ("CHEKTEST+39:  . Q",$G(@GL3@(22)),"Verbosity 3 - unexpected value for line 22")
+	D CHKTF('$D(@GL3@(23)),"Verbosity 3 - unexpected line 23")
+	K @GL1,@GL2,@GL3
 	Q
 	;
 COVRPTLS	; @TEST - coverage report returning text in global
-	N GL1,GL2,GL3,GL4,VRBOSITY
+	N GL1,GL2,GL3,VRBOSITY
 	S GL1=$NA(^TMP("%utCOVCOHORTSAVx",$J)) K @GL1
 	S GL2=$NA(^TMP("%utCOVCOHORTx",$J)) K @GL2
 	S GL3=$NA(^TMP("%utCOVRESULTx",$J)) K @GL3
-	S GL4=$NA(^TMP("%utCOVREPORTx",$J)) K @GL4
 	D SETGLOBS(GL1,GL2)
 	S VRBOSITY=1
-	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY,GL4)
-	D CHKEQ("COVERAGE PERCENTAGE: 42.11",$G(@GL4@(5)),"Verbosity 1 - not expected percentage value")
-	D CHKEQ("  %ut1            42.11%  8 out of 19",$G(@GL4@(9)),"Verbosity 1 - not expected value for line 9")
-	D CHKTF('$D(@GL4@(10)),"Verbosity 1 - unexpected data in 10th line")
-	K @GL4
+	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY)
+	D CHKEQ("COVERAGE PERCENTAGE: 42.11",$G(@GL3@(5)),"Verbosity 1 - not expected percentage value")
+	D CHKEQ("  %ut1            42.11%  8 out of 19",$G(@GL3@(9)),"Verbosity 1 - not expected value for line 9")
+	D CHKTF('$D(@GL3@(10)),"Verbosity 1 - unexpected data in 10th line")
+	K @GL3
 	;
 	S VRBOSITY=2
-	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY,GL4)
-	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL4@(10)),"Verbosity 2 - not expected value for 10th line")
-	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL4@(11)),"Verbosity 2 - not expected value for 11th line")
-	D CHKTF('$D(@GL4@(12)),"Verbosity 2 - unexpected data for 12th line")
-	K @GL4
+	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY)
+	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL3@(10)),"Verbosity 2 - not expected value for 10th line")
+	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL3@(11)),"Verbosity 2 - not expected value for 11th line")
+	D CHKTF('$D(@GL3@(12)),"Verbosity 2 - unexpected data for 12th line")
+	K @GL3
 	;
 	S VRBOSITY=3
-	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY,GL4)
-	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL4@(10)),"Verbosity 3 - unexpected value for line 10")
-	D CHKEQ("ACTLINES+9:  QUIT CNT",$G(@GL4@(19)),"Verbosity 3 - unexpected value for line 19")
-	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL4@(20)),"Verbosity 3 - unexpected value for line 20")
-	D CHKEQ("CHEKTEST+39:  . Q",$G(@GL4@(22)),"Verbosity 3 - unexpected value for line 22")
-	D CHKTF('$D(@GL4@(23)),"Verbosity 3 - unexpected line 23")
+	D COVRPTLS^%ut1(GL1,GL2,GL3,VRBOSITY)
+	D CHKEQ("    ACTLINES           0.00%  0 out of 9",$G(@GL3@(10)),"Verbosity 3 - unexpected value for line 10")
+	D CHKEQ("ACTLINES+9:  QUIT CNT",$G(@GL3@(19)),"Verbosity 3 - unexpected value for line 19")
+	D CHKEQ("    CHEKTEST          80.00%  8 out of 10",$G(@GL3@(20)),"Verbosity 3 - unexpected value for line 20")
+	D CHKEQ("CHEKTEST+39:  . Q",$G(@GL3@(22)),"Verbosity 3 - unexpected value for line 22")
+	D CHKTF('$D(@GL3@(23)),"Verbosity 3 - unexpected line 23")
 	;
-	K @GL1,@GL2,@GL3,@GL4
+	K @GL1,@GL2,@GL3
 	Q
 	;
 TRIMDATA	; @TEST - TRIMDATA in %utcover
@@ -245,6 +242,7 @@ SETGLOBS(GL1,GL2)	;
 	;
 	;
 CACHECOV	;@TEST - set up routine for analysis in globals
+	I +$SY=47 QUIT
 	N GLOB,GLOBT
 	S GLOB=$NA(^TMP("%uttcovr1",$J)),GLOBT=$NA(@GLOB@("uttcovr2",$J)) K @GLOB,@GLOBT
 	K ^TMP("%utt4val",$J)
