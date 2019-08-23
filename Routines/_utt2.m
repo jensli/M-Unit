@@ -29,9 +29,11 @@ T12	;
 	QUIT
 EQ	; @TEST Rename of CHKEQ
 	D EQ^%ut(1,1)
+	D eq^%ut(1,1)
 	QUIT
 TF	; @TEST Rename of CHKTF
 	D TF^%ut(1)
+	D tf^%ut(1)
 	QUIT
 XTENT	;
 	;;T12;An XTENT offset entry point in Another Routine invoked through XTROU offsets

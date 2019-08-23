@@ -192,6 +192,9 @@ VERBOSE1(%utETRY,%utI)	; Print out the entry point info
 TF(XTSTVAL,XTERMSG)	; Rename of CHKTF
 	D CHKTF($G(XTSTVAL),$G(XTERMSG))
 	QUIT
+tf(XTSTVAL,XTERMSG)	; Rename of CHKTF
+	D CHKTF($G(XTSTVAL),$G(XTERMSG))
+	QUIT
 CHKTF(XTSTVAL,XTERMSG)	; Entry point for checking True or False values
 	; ZEXCEPT: %utERRL,%utGUI - CREATED IN SETUP, KILLED IN END
 	; ZEXCEPT: %ut - NEWED IN EN
@@ -213,6 +216,9 @@ CHKTF(XTSTVAL,XTERMSG)	; Entry point for checking True or False values
 	Q
 	;
 EQ(XTEXPECT,XTACTUAL,XTERMSG)	; Rename of CHKEQ
+	D CHKEQ($G(XTEXPECT),$G(XTACTUAL),$G(XTERMSG))
+	QUIT
+eq(XTEXPECT,XTACTUAL,XTERMSG)	; Rename of CHKEQ
 	D CHKEQ($G(XTEXPECT),$G(XTACTUAL),$G(XTERMSG))
 	QUIT
 CHKEQ(XTEXPECT,XTACTUAL,XTERMSG)	; Entry point for checking values to see if they are EQUAL
