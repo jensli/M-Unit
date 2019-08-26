@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, StdCtrls, ExtCtrls, ImgList, Trpcb, RPCConf1, Fmcmpnts,
-  Diaccess, Fmlookup, Menus, ActnList, System.Actions;
+  Diaccess, Fmlookup, Menus, ActnList, System.Actions, System.ImageList;
 
 type
   TDoNextReturn = (dnrFine, dnrFailure, dnrError);
@@ -118,7 +118,7 @@ begin
   begin
     with RPCBroker1 do
     begin
-      CreateContext('XTMUNIT');
+      CreateContext('utMUNIT');
       if GroupIEN = '' then     //  based on ROUTINE name
       begin
         RemoteProcedure := 'utMUNIT-TEST LOAD';
