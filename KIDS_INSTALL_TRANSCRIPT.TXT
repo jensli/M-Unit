@@ -1,0 +1,109 @@
+bash-4.2$ csession CACHE -U FOIA1907
+
+Node: 3b4dddb89ba6, Instance: CACHE
+
+FOIA1907>S DUZ=1
+
+FOIA1907>D ^XUP
+
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT220
+
+You have 11360 new messages.
+Select OPTION NAME: 
+FOIA1907>D ^XPDIL,^XPDI
+
+Enter a Host File: /tmp/M-UNIT_1P6.KID
+
+KIDS Distribution saved on Aug 28, 2019@14:20:20
+Comment: T1 
+
+This Distribution contains Transport Globals for the following Package(s):
+   M-UNIT 1.6
+Distribution OK!
+
+Want to Continue with Load? YES// 
+Loading Distribution...
+
+   M-UNIT 1.6
+Use INSTALL NAME: M-UNIT 1.6 to install this Distribution.
+
+Select INSTALL NAME: M-UNIT 1.6       Loaded from Distribution    8/28/19@14:28:
+33
+     => T1   ;Created on Aug 28, 2019@14:20:20
+
+This Distribution was loaded on Aug 28, 2019@14:28:33 with header of 
+   T1   ;Created on Aug 28, 2019@14:20:20
+   It consisted of the following Install(s):
+     M-UNIT 1.6
+Checking Install for Package M-UNIT 1.6
+
+Install Questions for M-UNIT 1.6
+
+Incoming Files:
+
+
+   17.9001   M-UNIT TEST GROUP  (including data)
+
+Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO// 
+
+
+Want KIDS to INHIBIT LOGONs during the install? NO// 
+Want to DISABLE Scheduled Options, Menu Options, and Protocols? NO// 
+
+Enter the Device you want to print the Install messages.
+You can queue the install by enter a 'Q' at the device prompt.
+Enter a '^' to abort the install.
+
+DEVICE: HOME// ;P-OTHER;  Virtual Terminal
+
+ 
+ PACKAGE MASH UTILITIES **Couldn't Add to file**
+The value '%u' for field PREFIX in file PACKAGE is not valid.
+ 
+ Install Started for M-UNIT 1.6 : 
+               Aug 28, 2019@14:28:41
+ 
+Build Distribution Date: Aug 28, 2019
+ 
+ Installing Routines:..............
+               Aug 28, 2019@14:28:41
+ 
+ Running Pre-Install Routine: ^ZZUTPRE.
+ 
+ Installing Data Dictionaries: ..
+               Aug 28, 2019@14:28:41
+ 
+ Installing Data: 
+               Aug 28, 2019@14:28:41
+ 
+ Installing PACKAGE COMPONENTS: 
+ 
+ Installing REMOTE PROCEDURE....
+ 
+ Installing OPTION....
+               Aug 28, 2019@14:28:41
+ 
+ Running Post-Install Routine: ^ZZUTPOST.
+Routine:       ut Loaded, Saved as      %ut
+Routine:      ut1 Loaded, Saved as     %ut1
+Routine:  utcover Loaded, Saved as %utcover
+Routine:     utt1 Loaded, Saved as    %utt1
+Routine:     utt2 Loaded, Saved as    %utt2
+Routine:     utt3 Loaded, Saved as    %utt3
+Routine:     utt4 Loaded, Saved as    %utt4
+Routine:     utt5 Loaded, Saved as    %utt5
+Routine:     utt6 Loaded, Saved as    %utt6
+Routine:     utt7 Loaded, Saved as    %utt7
+Routine:  uttcovr Loaded, Saved as %uttcovr
+ 
+ Updating Routine file......
+ 
+ Updating KIDS files.......
+ 
+ M-UNIT 1.6 Installed. 
+               Aug 28, 2019@14:28:41
+ 
+ NO Install Message sent 
