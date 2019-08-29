@@ -1,4 +1,4 @@
-%utcover ;JLI - generic coverage and unit test runner ;04/29/17  15:29
+%utcover ;JLI - generic coverage and unit test runner ;2019-08-29  4:20 PM
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Joel L. Ivey 08/15.  Additional work 08/15-02/17.
@@ -173,7 +173,7 @@ LIST(XCLDROUS,TYPE,TEXTGLOB,GLOB,LINNUM) ;
  N CURRCOV,CURRLIN,LINCOV,LINE,LINTOT,ROULIST,ROUNAME,TAG,TOTCOV,TOTLIN,XVAL
  ;
  I '$D(LINNUM) S LINNUM=0 ; initialize on first entry
- I '$D(GLOB) N GLOB S GLOB=$NA(^TMP("%utCOVREPORT",$J))
+ I '$D(GLOB) N GLOB S GLOB=$NA(^TMP("%utRESULT",$J))
  D TRIMDATA(.XCLDROUS,GLOB) ; remove undesired routines from data
  ;
  N JOB,NAME,BASE,TEXT,VAL
