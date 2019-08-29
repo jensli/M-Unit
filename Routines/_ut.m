@@ -1,4 +1,4 @@
-%ut ;VEN-SMH/JLI - PRIMARY PROGRAM FOR M-UNIT TESTING ;07/05/17  11:47
+%ut ;VEN-SMH/JLI - PRIMARY PROGRAM FOR M-UNIT TESTING ;2019-08-29  4:29 PM
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Joel L. Ivey as XTMUNIT while working for U.S. Department of Veterans Affairs 2003-2012
@@ -18,7 +18,7 @@
  D ^%utt6 ; runs unit tests on all of it
  Q
  ;
-en(%utRNAM,%utVERB,%utBREAK)
+en(%utRNAM,%utVERB,%utBREAK) ; Rename of EN
  D EN($G(%utRNAM),$G(%utVERB),$G(%utBREAK))
  QUIT
 EN(%utRNAM,%utVERB,%utBREAK) ; .SR Entry point with primary test routine name
@@ -246,14 +246,14 @@ CHKEQ(XTEXPECT,XTACTUAL,XTERMSG) ; Entry point for checking values to see if the
  I $D(%utGUI),XTEXPECT'=XTACTUAL S %ut("CNT")=%ut("CNT")+1,@%ut("RSLT")@(%ut("CNT"))=%ut("LOC")_XTGUISEP_"FAILURE"_XTGUISEP_FAILMSG_XTERMSG,%ut("FAIL")=%ut("FAIL")+1
  Q
  ;
-fail(XTERMSG)
+fail(XTERMSG) ; Rename of FAIL
  D FAIL($G(XTERMSG))
  QUIT
 FAIL(XTERMSG) ; Entry point for generating a failure message
  D FAIL^%ut1($G(XTERMSG))
  Q
  ;
-succeed
+succeed ; Rename of SUCCEED
  D SUCCEED
  QUIT
 SUCCEED ; Entry point for forcing a success (Thx David Whitten)
