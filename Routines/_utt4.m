@@ -1,4 +1,4 @@
-%utt4 ; VEN/SMH/JLI - Coverage Test Runner;01/30/17  11:46
+%utt4 ; VEN/SMH/JLI - Coverage Test Runner;2019-08-29  4:27 PM
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Sam H. Habiel 07/2013-04/2014
@@ -8,7 +8,7 @@ XTMUNITW ; VEN/SMH - Coverage Test Runner;2014-04-17  3:30 PM
  ;;7.3;KERNEL TOOLKIT;;
  ;
  ; This tests code in XTMUNITV for coverage
- D EN^%ut($T(+0),1)
+ D en^%ut($T(+0),1)
  QUIT
  ;
 MAIN ; @TEST - Test coverage calculations
