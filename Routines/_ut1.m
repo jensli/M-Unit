@@ -1,4 +1,4 @@
-%ut1 ;VEN/SMH/JLI - CONTINUATION OF M-UNIT PROCESSING ;04/26/17  21:10
+%ut1 ;VEN/SMH/JLI - CONTINUATION OF M-UNIT PROCESSING ;Aug 30, 2019@16:49
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Joel L. Ivey as XTMUNIT1 while working for U.S. Department of Veterans Affairs 2003-2012
@@ -160,25 +160,27 @@ COV(NMSPS,COVCODE,VERBOSITY) ; VEN/SMH - PUBLIC ENTRY POINT; Coverage calculatio
  ;
  ; ZEXCEPT: %utcovxx - SET and KILLED in this code at top level
  ; ZEXCEPT: %Monitor,%apiOBJ,DecomposeStatus,LineByLine,Start,Stop,System,class - not variables parts of classes
- N COVER,COVERSAV,I,NMSP1,RTN,RTNS,ERR,STATUS
+ ; ZEXCEPT: CTRAP - not really a variable
+ N I,NMSP1,RTN,RTNS,ERR,STATUS
+ S VERBOSITY=+$G(VERBOSITY) ; Get 0 if not passed.
+ ;
+ ; Globals used throughout
+ N COVGL,ORIGGL,SURVGL,RESGL
+ S RESGL=$NA(^TMP("%utRESULT",$J))
+ S COVGL=$NA(^TMP("%utCOVERAGE",$J))
+ S ORIGGL=$NA(^TMP("%utORIGINAL-COHORT",$J))
+ S SURVGL=$NA(^TMP("%utSURVIVING-COHORT",$J))
+ ;
  W !,"Loading routines to test coverage...",!
  D GETRTNS(.RTNS,NMSPS)
  ;
- ; ZEXCEPT: CTRAP - not really a variable
- S VERBOSITY=+$G(VERBOSITY) ; Get 0 if not passed.
- ;
- ;
- N GL
- S GL=$NA(^TMP("%utORIGINAL-COHORT",$J))
- I '$D(^TMP("%utcovrunning",$J)) K @GL
- D RTNANAL(.RTNS,GL) ; save off any current coverage data
+ ; Turn on Coverage Checking if we are not already running coverage
  I '$D(^TMP("%utcovrunning",$J)) N EXIT S EXIT=0 D  Q:EXIT
- . K ^TMP("%utSURVIVING-COHORT",$J)
- . M ^TMP("%utSURVIVING-COHORT",$J)=^TMP("%utORIGINAL-COHORT",$J)
- . K ^TMP("%utCOVERAGE",$J)
+ . K @COVGL,@RESGL,@ORIGGL,@SURVGL
+ . D RTNANAL(.RTNS,ORIGGL)
  . S ^TMP("%utcovrunning",$J)=1,%utcovxx=1
  . ;
- . I ($$GETSYS^%ut()=47) VIEW "TRACE":1:$NA(^TMP("%utCOVERAGE",$J))  ; GT.M START PROFILING
+ . I ($$GETSYS^%ut()=47) VIEW "TRACE":1:COVGL  ; GT.M START PROFILING
  . ;
  . I ($$GETSYS^%ut()=0) D  ; CACHE CODE TO START PROFILING
  . . N NMSP,NMSPV S NMSP="",NMSPV="" F  S NMSPV=$O(RTNS(NMSPV)) Q:NMSPV=""  S NMSP=NMSP_NMSPV_","
@@ -186,58 +188,52 @@ COV(NMSPS,COVCODE,VERBOSITY) ; VEN/SMH - PUBLIC ENTRY POINT; Coverage calculatio
  . . S STATUS=##class(%Monitor.System.LineByLine).Start($lb(NMSP),$lb("RtnLine"),$lb($j))
  . . I +STATUS'=1 D DecomposeStatus^%apiOBJ(STATUS,.ERR,"-d") F I=1:1:ERR W ERR(I),!
  . . I +STATUS'=1 K ERR S EXIT=1
- . . Q
- . Q
- DO  ; Run the code, but keep our variables to ourselves.
+ ;
+ ; Run the code, but keep our variables to ourselves
+ DO
  . NEW $ETRAP,$ESTACK
  . I ($$GETSYS^%ut()=47) D  ; GT.M SPECIFIC
  . . SET $ETRAP="Q:($ES&$Q) -9 Q:$ES  W ""CTRL-C ENTERED"""
  . . ;USE $PRINCIPAL:(CTRAP=$C(3)) ; JLI 170403
  . . USE %utIO:(CTRAP=$C(3)) ; JLI 170403
- . . Q
  . NEW (DUZ,IO,COVCODE,U,DILOCKTM,DISYS,DT,DTIME,IOBS,IOF,IOM,ION,IOS,IOSL,IOST,IOT,IOXY,%utIO)
  . XECUTE COVCODE
- . Q
- ; GT.M STOP PROFILING if this is the original level that started it
+ ;
+ ;
+ ; STOP PROFILING if this is the original level that started it and save into Coverage Global
  I $D(^TMP("%utcovrunning",$J)),$D(%utcovxx) D
- . I ($$GETSYS^%ut()=47) VIEW "TRACE":0:$NA(^TMP("%utCOVERAGE",$J)) ; GT.M SPECIFIC
- . I ($$GETSYS^%ut()=0) ; CACHE SPECIFIC
+ . I ($$GETSYS^%ut()=47) D GTMCOV(COVGL,ORIGGL,SURVGL) I 1
+ . I ($$GETSYS^%ut()=0) D CACHECOV(SURVGL) I 1
  . K %utcovxx,^TMP("%utcovrunning",$J)
- . Q
  ;
  ; Don't calculate coverage if we are still running (inception scenario)
  I $D(^TMP("%utcovrunning",$J)) QUIT
  ;
- I ($$GETSYS^%ut()=0) D  ; CACHE SPECIFIC CODE
- . S COVERSAV=$NA(^TMP("%utSURVIVING-COHORT",$J)) K @COVERSAV
- . S COVER=$NA(^TMP("%utORIGINAL-COHORT",$J)) K @COVER
- . D CACHECOV(COVERSAV,COVER)
- . D TOTAGS(COVERSAV,0),TOTAGS(COVER,1)
- . D ##class(%Monitor.System.LineByLine).Stop()
- ;
- D COVCOV($NA(^TMP("%utSURVIVING-COHORT",$J)),$NA(^TMP("%utCOVERAGE",$J))) ; Venn diagram matching between globals
  ; Report
- D COVRPT($NA(^TMP("%utORIGINAL-COHORT",$J)),$NA(^TMP("%utSURVIVING-COHORT",$J)),$NA(^TMP("%utRESULT",$J)),VERBOSITY)
+ D COVRPT(ORIGGL,SURVGL,RESGL,VERBOSITY)
  QUIT
  ;
-CACHECOV(GLOBSAV,GLOB) ;
+GTMCOV(COVGL,ORIGGL,SURVGL) ;
+ M @SURVGL=@ORIGGL
+ VIEW "TRACE":0:COVGL ; GT.M SPECIFIC
+ D COVCOV(SURVGL,COVGL) ; Venn diagram matching between globals
+ QUIT
+ ;
+CACHECOV(SURVGL) ;
  ; ZEXCEPT: %Monitor,GetMetrics,GetRoutineCount,GetRoutineName,LineByLine,System,class - not variable names, part of classes
  N %N,DIF,I,METRIC,METRICNT,METRICS,MTRICNUM,ROUNAME,ROUNUM,X,XCNP,XXX
- I $$ISUTEST(),'$D(^TMP("%utt4val",$J)) S ROUNUM=1,METRICS="RtnLine",METRICNT=1,ROUNAME="%ut"
- I $D(^TMP("%utt4val",$J))!'$$ISUTEST() S ROUNUM=##class(%Monitor.System.LineByLine).GetRoutineCount(),METRICS=##class(%Monitor.System.LineByLine).GetMetrics(),METRICNT=$l(METRICS,",")
- ; if only running to do coverage, should be 1
+ S ROUNUM=##class(%Monitor.System.LineByLine).GetRoutineCount(),METRICS=##class(%Monitor.System.LineByLine).GetMetrics(),METRICNT=$l(METRICS,",")
  S MTRICNUM=0 F I=1:1:METRICNT S METRIC=$P(METRICS,",",I) I METRIC="RtnLine" S MTRICNUM=I Q
  ;
  F I=1:1:ROUNUM D
- . I $D(^TMP("%utt4val",$J))!'$$ISUTEST() S ROUNAME=##class(%Monitor.System.LineByLine).GetRoutineName(I)
+ . S ROUNAME=##class(%Monitor.System.LineByLine).GetRoutineName(I)
  . ; get routine loaded into location
- . S DIF=$NA(@GLOBSAV@(ROUNAME)),DIF=$E(DIF,1,$L(DIF)-1)_",",XCNP=0,X=ROUNAME
- . ;X ^%ZOSF("LOAD") ; JLI 160912 see 160701 note in comments at top
+ . S DIF=$NA(@SURVGL@(ROUNAME)),DIF=$E(DIF,1,$L(DIF)-1)_",",XCNP=0,X=ROUNAME
  . X "N %,%N S %N=0 X ""ZL @X F XCNP=XCNP+1:1 S %N=%N+1,%=$T(+%N) Q:$L(%)=0  S @(DIF_XCNP_"""",0)"""")=%""" ; JLI see 160701 note in comments at top
- . M @GLOB@(ROUNAME)=@GLOBSAV@(ROUNAME)
- . Q
  ;
- I $D(^TMP("%utt4val",$J))!'$$ISUTEST() F XXX=1:1:ROUNUM D GETVALS(XXX,GLOB,MTRICNUM)
+ F XXX=1:1:ROUNUM D GETVALS(XXX,SURVGL,MTRICNUM)
+ D TOTAGS(SURVGL,1)
+ D ##class(%Monitor.System.LineByLine).Stop()
  Q
  ;
 GETVALS(ROUNUM,GLOB,MTRICNUM) ; get data on number of times a line seen (set into VAL)
@@ -401,9 +397,6 @@ COVRPTLS(C,S,R,V) ;
  . Q
  QUIT
  ;
-ISUTEST() ;
- Q $$ISUTEST^%ut()
- ;
 GETRTNS(RTNS,NMSPS) ; [Public] Get routines for namespaces
  ; .RTNS - Output. Initially empty
  ; NMSPS - Input: Namespaces
@@ -423,13 +416,12 @@ GETRTNS(RTNS,NMSPS) ; [Public] Get routines for namespaces
  . . . I $E($P(L2," ",2),1,2)'=";;" K %ZR(RN) W !,"Routine "_RN_" removed from analysis, since it doesn't have the standard second line",! ; JLI 160316 inserted to replace above
  .. M RTNS=%ZR
  .. K %ZR
- . Q
  ;
  I ($$GETSYS^%ut()=0) D  ; CACHE SPECIFIC
  . N NMSP S NMSP=$G(NMSPS)
  . D:NMSP]""  S NMSP="" F  S NMSP=$O(NMSPS(NMSP)) Q:NMSP=""  D
  . . S NMSP1=NMSP I NMSP["*" S NMSP1=$P(NMSP,"*")
  . . I $D(^$R(NMSP1)) S RTNS(NMSP1)=""
- . . I NMSP["*" S RTN=NMSP1 F  S RTN=$O(^$R(RTN)) Q:RTN'[NMSP1  S RTNS(RTN)=""
- . . Q
- . Q
+ . . I NMSP["*" S RTN=NMSP1 F  S RTN=$O(^$R(RTN)) Q:RTN'[NMSP1  W RTN," " S RTNS(RTN)=""
+ ;
+ QUIT
