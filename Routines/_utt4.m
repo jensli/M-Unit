@@ -1,4 +1,4 @@
-%utt4 ; VEN/SMH/JLI - Coverage Test Runner;2019-08-30  10:45 AM
+%utt4 ; VEN/SMH/JLI - Coverage Test Runner;2019-08-30  11:02 AM
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Sam H. Habiel 07/2013-04/2014
@@ -12,16 +12,13 @@ XTMUNITW ; VEN/SMH - Coverage Test Runner;2014-04-17  3:30 PM
  QUIT
  ;
 MAIN ; @TEST - Test coverage calculations
- Q:$D(^TMP("%uttcovr",$J))  ; already running coverage analysis from %uttcovr
- Q:$D(^TMP("%utRESULT",$J))  ; another coverage already running
- S ^TMP("%utt4val",$J)=1
+ K ^TMP("%utRESULT",$J)
  D COV^%ut("%utt3","D EN^%ut(""%utt3"",1)",-1)  ; Only produce output global.
+ I $D(^TMP("%utcovrunning",$J)) QUIT
  D CHKEQ^%ut("14/19",^TMP("%utRESULT",$J))
  D CHKEQ^%ut("2/5",^TMP("%utRESULT",$J,"%utt3","INTERNAL"))
  D CHKTF^%ut($D(^TMP("%utRESULT",$J,"%utt3","T2",4)))
  D CHKEQ^%ut("1/1",^TMP("%utRESULT",$J,"%utt3","SETUP"))
- K ^TMP("%utt4val",$J)
- K ^TMP("%utRESULT",$J)
  QUIT
  ;
  ; The following code was copied from the routine XLFDT so that unit tests for LEAKSOK

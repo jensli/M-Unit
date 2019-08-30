@@ -1,4 +1,4 @@
-%uttcovr ;JIVEYSOFT/JLI - runs coverage tests on %ut and %ut1 routines via unit tests ;2019-08-29  4:28 PM
+%uttcovr ;JIVEYSOFT/JLI - runs coverage tests on %ut and %ut1 routines via unit tests ;2019-08-30  11:18 AM
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Joel L. Ivey 05/2014-12/2015
@@ -62,8 +62,7 @@ RTNANAL ; @TEST - routine analysis
  S GLB=$NA(^TMP("%uttcovr-rtnanal",$J)) K @GLB
  D RTNANAL^%ut1(.ROUS,GLB)
  D CHKTF($D(@GLB@("%utt4","MAIN"))>1,"Not enough 'MAIN' nodes found")
- D CHKTF($G(@GLB@("%utt4","MAIN",4))["D COV^%ut(""%utt3"",""D EN^%ut(""""%utt3"""",1)"",-1)","Incorrect data for line 2 in MAIN")
- D CHKTF($G(@GLB@("%utt4","MAIN",10))=" QUIT","Final QUIT not on expected line")
+ D CHKTF($G(@GLB@("%utt4","MAIN",8))=" QUIT","Final QUIT expected on line 8")
  K @GLB
  Q
  ;
