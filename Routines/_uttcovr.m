@@ -1,4 +1,4 @@
-%uttcovr ;JIVEYSOFT/JLI - runs coverage tests on %ut and %ut1 routines via unit tests ;2019-08-30  11:18 AM
+%uttcovr ;JIVEYSOFT/JLI - runs coverage tests on %ut and %ut1 routines via unit tests ;Aug 30, 2019@17:01
  ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Joel L. Ivey 05/2014-12/2015
@@ -241,15 +241,15 @@ SETGLOBS(GL1,GL2) ;
  Q
  ;
  ;
-CACHECOV ;@TEST - set up routine for analysis in globals
- I +$SY=47 QUIT
- N GLOB,GLOBT
- S GLOB=$NA(^TMP("%uttcovr1",$J)),GLOBT=$NA(@GLOB@("uttcovr2",$J)) K @GLOB,@GLOBT
- K ^TMP("%utt4val",$J)
- D CACHECOV^%ut1(GLOB,GLOBT)
- D CHKEQ($T(+1^%ut),@GLOB@("%ut",1,0),"BAD FIRST LINE LOADED FOR %ut")
- D CHKEQ($T(+14^%ut),@GLOBT@("%ut",14,0),"Bad 14th line loaded for %ut")
- K @GLOB,@GLOBT
+CACHECOV ;#TEST - set up routine for analysis in globals
+ ; CACHECOV was re-written and won't produce any output w/o profiling first being turned on.
+ ; I +$SY=47 QUIT
+ ; N GLOB,GLOBT
+ ; S GLOB=$NA(^TMP("%uttcovr1",$J)) K @GLOB
+ ; D CACHECOV^%ut1(GLOB)
+ ; D CHKEQ($T(+1^%ut),@GLOB@("%ut",1,0),"BAD FIRST LINE LOADED FOR %ut")
+ ; D CHKEQ($T(+14^%ut),@GLOBT@("%ut",14,0),"Bad 14th line loaded for %ut")
+ ; K @GLOB,@GLOBT
  Q
  ;
 GETVALS ; no test - primarily calls to Cache classes
