@@ -25,9 +25,8 @@ EN(%utRNAM,%utVERB,%utBREAK) ; .SR Entry point with primary test routine name
  ; %utRNAM: (Required) Routine name that contians the tags with @TEST in them or the tag XTROU
  ; %utVERB: (optional) 1 for verbose output or for verbose and timing info 2 (milliseconds) or 3 (microseconds).
  ; %utBREAK:(optional) bool - Break upon error or upon failure
- N %utLIST,%utROU,%ut,%utIO
- S %utLIST=1,%utROU(%utLIST)=%utRNAM,%utIO=$S($D(IO)#2:IO,1:$PRINCIPAL)
- N IO S IO=%utIO
+ N %utLIST,%utROU,%ut
+ S %utLIST=1,%utROU(%utLIST)=%utRNAM
  K ^TMP("%ut",$J,"UTVALS")
  D SETUT
  D EN1(.%utROU,%utLIST)
