@@ -1,7 +1,7 @@
 %utt4 ; VEN/SMH/JLI - Coverage Test Runner;2019-08-30  11:02 AM
- ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
- ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
- ; Original routine authored by Sam H. Habiel 07/2013-04/2014
+ ;;1.6;M-UNIT;;Aug 28, 2019;Build 17
+ ; Licensed under Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
+ ; Original routine authored by Sam H. Habiel 2013-2014,2020
  ; Additions and modifications made by Joel L. Ivey 05/2014-08/2015
  ;
 XTMUNITW ; VEN/SMH - Coverage Test Runner;2014-04-17  3:30 PM
@@ -19,6 +19,52 @@ MAIN ; @TEST - Test coverage calculations
  D CHKEQ^%ut("2/5",^TMP("%utRESULT",$J,"%utt3","INTERNAL"))
  D CHKTF^%ut($D(^TMP("%utRESULT",$J,"%utt3","T2",4)))
  D CHKEQ^%ut("1/1",^TMP("%utRESULT",$J,"%utt3","SETUP"))
+ QUIT
+ ;
+MUL1 ; @TEST - Test multiple routines
+ K ^TMP("%utRESULT",$J)
+ D COV^%ut("%utt*","D EN^%ut(""%utt3"",1)",-1)  ; Only produce output global.
+ I $D(^TMP("%utcovrunning",$J)) QUIT
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt1")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt2")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt3")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt4")))
+ QUIT
+ ;
+MUL2 ; @TEST - Test multiple routines
+ K ^TMP("%utRESULT",$J)
+ N NMSP S NMSP("%utt*")=""
+ D COV^%ut(.NMSP,"D EN^%ut(""%utt3"",1)",-1)  ; Only produce output global.
+ I $D(^TMP("%utcovrunning",$J)) QUIT
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt1")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt2")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt3")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt4")))
+ QUIT
+ ;
+MUL3 ; @TEST - Test multiple routines
+ K ^TMP("%utRESULT",$J)
+ N NMSP S NMSP("%utt3")=""
+ S NMSP("%utt4")=""
+ D COV^%ut(.NMSP,"D EN^%ut(""%utt3"",1)",-1)  ; Only produce output global.
+ I $D(^TMP("%utcovrunning",$J)) QUIT
+ D TF^%ut('$D(^TMP("%utRESULT",$J,"%utt1")))
+ D TF^%ut('$D(^TMP("%utRESULT",$J,"%utt2")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt3")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt4")))
+ QUIT
+ ;
+MUL4 ; @TEST - Test multiple routines
+ K ^TMP("%utRESULT",$J)
+ N NMSP S NMSP("%utt3")=""
+ S NMSP("%utt4")=""
+ S NMSP="%utt2"
+ D COV^%ut(.NMSP,"D EN^%ut(""%utt3"",1)",-1)  ; Only produce output global.
+ I $D(^TMP("%utcovrunning",$J)) QUIT
+ D TF^%ut('$D(^TMP("%utRESULT",$J,"%utt1")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt2")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt3")))
+ D TF^%ut($D(^TMP("%utRESULT",$J,"%utt4")))
  QUIT
  ;
  ; The following code was copied from the routine XLFDT so that unit tests for LEAKSOK
