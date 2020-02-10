@@ -1,5 +1,5 @@
 %uttcovr ;JIVEYSOFT/JLI - runs coverage tests on %ut and %ut1 routines via unit tests ;Aug 30, 2019@17:01
- ;;1.6;M-UNIT;;Aug 28, 2019;Build 6
+ ;;1.62;M-UNIT;;Feb 10 2020
  ; Submitted to OSEHRA Jul 8, 2017 by Joel L. Ivey under the Apache 2 license (http://www.apache.org/licenses/LICENSE-2.0.html)
  ; Original routine authored by Joel L. Ivey 05/2014-12/2015
  ; Modified by Joel L. Ivey 02/2016-03/2016
