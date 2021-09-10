@@ -38,7 +38,7 @@ CHEKTEST(%utROU,%ut,%utUETRY,FLAG) ; Collect Test list.
  S I=$L($T(@(U_%utROU))) I I<0 Q "-1^Invalid Routine Name"
  D NEWSTYLE(.LIST,%utROU)
  I FLAG D
- . F I=1:1:LIST Q:'$D(LIST(I))  Q:LIST'>0  I $P(LIST(I),U)'="!" S LIST=LIST-1,I=I-1 F J=I+1:1:LIST S LIST(J)=LIST(J+1) I J=LIST K LIST(J+1)
+ . F I=1:1:LIST Q:'$D(LIST(I))  Q:LIST'>0  I $P(LIST(I),U)'="!" S LIST=LIST-1,I=I-1 Q:I=LIST  F J=I+1:1:LIST S LIST(J)=LIST(J+1) I J=LIST K LIST(J+1)
  . F I=LIST+1:1 Q:'$D(LIST(I))  K LIST(I)
  . Q
  F I=1:1:LIST S %ut("ENTN")=%ut("ENTN")+1,%utUETRY(%ut("ENTN"))=$P(LIST(I),U,2),%utUETRY(%ut("ENTN"),"NAME")=$P(LIST(I),U,3,99)
