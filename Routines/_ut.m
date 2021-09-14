@@ -210,7 +210,7 @@ CHKTF(XTSTVAL,XTERMSG) ; Entry point for checking True or False values
  . . I $G(%ut("BREAK")) W !,"Breaking on False value"
  . . I $G(%ut("BREAK")) BREAK  ; Break upon False value
  . . Q
- . I XTSTVAL W "."
+ . I XTSTVAL,'%utVERB W "."
  . D RESETIO^%ut1
  . Q
  I $D(%utGUI),'XTSTVAL S %ut("CNT")=%ut("CNT")+1,@%ut("RSLT")@(%ut("CNT"))=%ut("LOC")_XTGUISEP_"FAILURE"_XTGUISEP_XTERMSG,%ut("FAIL")=%ut("FAIL")+1
@@ -239,7 +239,7 @@ CHKEQ(XTEXPECT,XTACTUAL,XTERMSG) ; Entry point for checking values to see if the
  . . I $D(%ut("BREAK")) W !,"Breaking on non-equal values"
  . . I $D(%ut("BREAK")) BREAK  ; Break upon non-equal values
  . . Q
- . E  W "."
+ . I '%utVERB W "."
  . D RESETIO^%ut1
  . Q
  I $D(%utGUI),XTEXPECT'=XTACTUAL S %ut("CNT")=%ut("CNT")+1,@%ut("RSLT")@(%ut("CNT"))=%ut("LOC")_XTGUISEP_"FAILURE"_XTGUISEP_FAILMSG_XTERMSG,%ut("FAIL")=%ut("FAIL")+1
@@ -261,7 +261,7 @@ SUCCEED ; Entry point for forcing a success (Thx David Whitten)
  ; Switch IO and write out the dot for activity
  I '$D(%utGUI) D
  . D SETIO^%ut1
- . W "."
+ . I '%utVERB W "."
  . D RESETIO^%ut1
  ;
  ; Increment test counter
