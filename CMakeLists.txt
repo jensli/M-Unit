@@ -31,6 +31,14 @@ set(source_files
   Routines/_ut.m
   Routines/_ut1.m
   Routines/_utcover.m
+  Routines/_utt1.m
+  Routines/_utt2.m
+  Routines/_utt3.m
+  Routines/_utt4.m
+  Routines/_utt5.m
+  Routines/_utt6.m
+  Routines/_utt7.m
+  Routines/_uttcovr.m
 )
 
 # Add commands to compile .m files
