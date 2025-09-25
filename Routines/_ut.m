@@ -299,7 +299,7 @@ ERROR1 ;
  I $G(%ut("BREAK")) S @($S($$GETSYS()=47:"$ZS",1:"$ZE")_"="_""""""),$EC="" ; output for break added JLI 161020
  I $G(%ut("BREAK")) BREAK  ; if we are asked to break upon error, please do so!
  D SETIO^%ut1
- W !,%ut("ENT")," - " W:%ut("NAME")'="" %ut("NAME")," - Error: " W $S($$GETSYS()=47:$ZS,1:$ZE),! D
+ W !,%ut("ENT")," - " W:%ut("NAME")'="" %ut("NAME")," - Error: " W $S($$GETSYS()=47:$ZS,1:$ZE),! D WTRACE D
  . S %ut("ERRN")=%ut("ERRN")+1,%utERRL(%ut("ERRN"))=%ut("NAME"),%utERRL(%ut("FAIL"),"MSG")=$S($$GETSYS()=47:$ZS,1:$ZE),%utERRL(%ut("FAIL"),"ENTRY")=%ut("ENT")
  . Q
  D RESETIO^%ut1
@@ -499,3 +499,10 @@ ZHDIF(%ZH0,%ZH1) ;Display dif of two $ZH's
  ;
  N %ZH2 S %ZH2=T1-T0*1000
  QUIT %ZH2
+ ;
+WTRACE ; Write a stack trace.
+ Q:'%utVERB ; Disable if not verbose
+ N ENTRYNR
+ F ENTRYNR=$STACK(-1):-1:0 D
+ .W ENTRYNR,": ",$STACK(ENTRYNR,"place"),"  --  "_$STACK(ENTRYNR,"mcode"),!
+ Q
