@@ -109,7 +109,7 @@ EN1(%utROU,%utLIST) ;
  . ; == THIS FOR/DO BLOCK IS THE CENTRAL TEST RUNNER ==
  . S %utI=0
  . F  S %utI=$O(%utETRY(%utI)) Q:%utI'>0  S %ut("ENUM")=%ut("ERRN")+%ut("FAIL") D
- . . N $ETRAP S $ETRAP="D ERROR^%ut"
+ . . N $ETRAP,$ESTACK S $ETRAP="D ERROR^%ut"
  . . ;
  . . ; Run Set-up Code (only if present)
  . . S %ut("ENT")=$G(%ut("SETUP")) ; Current entry
@@ -277,6 +277,11 @@ ERROR ; record errors
  ; ZEXCEPT: %utERRL,%utGUI,%utERR -CREATED IN SETUP, KILLED IN END
  ; ZEXCEPT: %ut  -- NEWED ON ENTRY
  ; ZEXCEPT: XTGUISEP - newed in GUINEXT
+ ;
+ ; Unwinding stack makes sure that error handling occurs in a place where the %ut variable is defined.
+ ; Don't unwind the last frames so that the test framework can handle the error.
+ Q:$ESTACK>2
+ ;
  S %ut("CHK")=%ut("CHK")+1
  I '$D(%utGUI) D ERROR1
  I $D(%utGUI) D
@@ -449,29 +454,29 @@ GUINEXT(%utRSLT,%utLOC,XTGUISEP) ; Entry point for GUI execute next test - calle
  D  I %utROUT="" S @%utRSLT@(1)="" Q  ; 141018 JLI - Have to leave XTVALUE intact, in case they simply run again for STARTUP, etc.
  . I XTOLROU="",$D(@XTVALUE@("STARTUP")) D
  . . S %ut("LOC")=@XTVALUE@("STARTUP")
- . . N $ETRAP S $ETRAP="D ERROR^%ut"
+ . . N $ETRAP,$ESTACK S $ETRAP="D ERROR^%ut"
  . . D @(@XTVALUE@("STARTUP"))
  . . Q
  . S @XTVALUE@("LASTROU")=%utROUT I %utROUT'="",$T(@("SETUP^"_%utROUT))'="" D
  . . S %ut("LOC")="SETUP^"_%utROUT
- . . N $ETRAP S $ETRAP="D ERROR^%ut"
+ . . N $ETRAP,$ESTACK S $ETRAP="D ERROR^%ut"
  . . D @("SETUP^"_%utROUT)
  . . Q
  . I %utROUT="",$D(@XTVALUE@("SHUTDOWN")) D
  . . S %ut("LOC")=@XTVALUE@("SHUTDOWN")
- . . N $ETRAP S $ETRAP="D ERROR^%ut"
+ . . N $ETRAP,$ESTACK S $ETRAP="D ERROR^%ut"
  . . D @(@XTVALUE@("SHUTDOWN"))
  . . Q
  . Q
  S %ut("LOC")=%utLOC
  S %ut("CHK")=0,%ut("CNT")=1,%utERR=0
  D  ; to limit range of error trap so we continue through other tests
- . N $ETRAP S $ETRAP="D ERROR^%ut"
+ . N $ETRAP,$ESTACK S $ETRAP="D ERROR^%ut"
  . D @%ut("LOC")
  . Q
  I $T(@("TEARDOWN^"_%utROUT))'="" D
  . S %ut("LOC")="TEARDOWN^"_%utROUT
- . N $ETRAP S $ETRAP="D ERROR^%ut"
+ . N $ETRAP,$ESTACK S $ETRAP="D ERROR^%ut"
  . D @("TEARDOWN^"_%utROUT)
  . Q
  S @%ut("RSLT")@(1)=%ut("CHK")_XTGUISEP_(%ut("CNT")-1-%utERR)_XTGUISEP_%utERR
